@@ -1,5 +1,5 @@
 var express = require("express");
-var mysql   = require("mysql");
+var pg   = require("pg");
 var bodyParser  = require("body-parser");
 var md5 = require('MD5');
 var rest = require("./REST.js");
@@ -7,20 +7,13 @@ var app  = express();
 
 function REST(){
     var self = this;
-    self.connectMysql();
+    self.connectPg();
 };
 
-REST.prototype.connectMysql = function() {
+REST.prototype.connectPg = function() {
     var self = this;
-    var pool      =    mysql.createPool({
-        connectionLimit : 100,
-        host     : 'localhost',
-        user     : 'bookrest',
-        password : 'restbook',
-        database : 'librostexto',
-        debug    :  true
-    });
-    pool.getConnection(function(err,connection){
+    var connection = process.env.DATABASE_URL  || 'postgres://postgres:miosotis@localhost:5432/librostexto';
+   	pg.connect(connection, function(err, client, done){
         if(err) {
           self.stop(err);
         } else {
@@ -46,7 +39,7 @@ REST.prototype.startServer = function() {
 }
 
 REST.prototype.stop = function(err) {
-    console.log("ISSUE WITH MYSQL \n" + err);
+    console.log("ISSUE WITH PG \n" + err);
     process.exit(1);
 }
 
