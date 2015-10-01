@@ -33,7 +33,7 @@ REST.prototype.configureExpress = function(connection) {
 }
 
 REST.prototype.startServer = function() {
-      app.listen(3000,function(){
+      app.listen(process.env.PORT || 3000,function(){
           console.log("¡Todo correcto! Estoy saliendo por el Puerto 3000.");
       });
 }
