@@ -28,7 +28,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
     router.post("/newofe",function(req,res){
         pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
         	client.one("INSERT INTO ofertas (email,isbn,titulo,editorial,curso,Ciclo,estado,latitud,longitud,fecha) 
-        	VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
+        	VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
         	[req.body.email,req.body.isbn,req.body.titulo,req.body.editorial,req.body.curso,req.body.ciclo,req.body.estado,eq.body.latitud,req.body.longitud],CURRENT_DATE),
             function(err, result) {
             done();
