@@ -14,7 +14,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
     router.post("/newusu",function(req,res){
         pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
-            client.one("INSERT INTO usuarios (usuario,password,nombre) VALUES ('"+req.body.usuario+"','"+req.body.password+"','"+req.body.nombre+"')",
+            client.one("INSERT INTO usuarios (usuario,password,nombre,telefono,fecha) 
+            	VALUES ($1,$2,$3,$4)",
+            	[req.body.usuario,eq.body.password,req.body.nombre,req.body.telefono,CURRENT_DATE]),
                 function(err, result) {
             done();
             if (err)
@@ -25,8 +27,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
     router.post("/newofe",function(req,res){
         pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
-        client.one("INSERT INTO ofertas (email,isbn,titulo,editorial,curso,Ciclo,estado,latitud,longitud) VALUES ('"+req.body.email+"','"+req.body.isbn+"','"+req.body.titulo+"','"+req.body.editorial+"',"+
-            req.body.curso+",'"+req.body.ciclo+"','"+req.body.estado+"',"+req.body.latitud+","+req.body.longitud+")",
+        	client.one("INSERT INTO ofertas (email,isbn,titulo,editorial,curso,Ciclo,estado,latitud,longitud,fecha) 
+        	VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
+        	[req.body.email,req.body.isbn,req.body.titulo,req.body.editorial,req.body.curso,req.body.ciclo,req.body.estado,eq.body.latitud,req.body.longitud],CURRENT_DATE),
             function(err, result) {
             done();
             if (err) 
@@ -37,7 +40,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
     router.get("/getusu/:usuario/:password",function(req,res){
         pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
-        client.query("SELECT * FROM usuarios WHERE usuario='"+req.params.usuario+"' AND password='"+req.params.password+"'",
+        client.query("SELECT * FROM usuarios WHERE usuario=$1 AND password=$2", [req.params.usuario, req.params.password],
         	function(err, result) {
             done();
             if(err)
@@ -50,7 +53,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
     router.get("/getusu/:usuario/",function(req,res){
         pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
-        client.query("SELECT * FROM usuarios WHERE usuario='"+req.params.usuario+"'",
+        client.query("SELECT * FROM usuarios WHERE usuario=$1",[req.params.usuario],
         	function(err, result) {
             done();
             if(err)
@@ -75,7 +78,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
     router.get("/delofe/:isbn",function(req,res){
     	pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
-    		client.query("DELETE FROM ofertas WHERE isbn='"+req.params.isbn+"'", function(err, result) {
+    		client.query("DELETE FROM ofertas WHERE isbn=$1",[req.params.isbn], function(err, result) {
     		done();
             if(err)
                 res.json({"Error" : true, "Mensaje" : "Error ejecutando postgresSQL query"});
@@ -87,7 +90,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
     router.get("/getofe/:email",function(req,res){
         pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
-        client.query("SELECT * FROM ofertas WHERE email='"+req.params.email+"'", function(err, result) {
+        client.query("SELECT * FROM ofertas WHERE email=$1",[req.params.email], function(err, result) {
             done();
             if(err)
                 res.json({"Error" : true, "Mensaje" : "Error ejecutando postgresSQL query"});
