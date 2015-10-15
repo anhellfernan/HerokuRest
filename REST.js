@@ -54,7 +54,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         });
     });
 
-    router.get("/getusu/:usuario/",function(req,res){
+    router.get("/getpass/:usuario",function(req,res){
         pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
         client.query("SELECT * FROM usuarios WHERE usuario=$1",[req.params.usuario],
         	function(err, result) {
