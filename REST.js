@@ -41,23 +41,6 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         });
     });
 
-    router.post("/neweve",function(req,res){
-        pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
-        	client.query("INSERT INTO eventos (sala,websala,grupo,webgrupo,estilo,cp,fechahasta,hora,
-        		latitud,longitud,preciomax,preciomin,imagen)
-        	    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)",
-        	    [req.body.sala,req.body.websala,req.body.grupo,req.body.webgrupo,req.body.estilo,req.body.cp,req.body.fechahasta,
-        	    req.body.hora,req.body.latitud,req.body.longitud,req.body.preciomax,req.body.preciomin,req.body.imagen],
-            function(err, result) {
-            done();
-            if (err) 
-                res.json({"Error" : true, "Message" : "Error ejecutando postgresSQL query"});
-            else 
-                res.json({"Error" : false, "Mensaje" : "Registro añadido !"});            
-            });
-        });
-    });
-
     router.get("/getusu/:usuario/:password",function(req,res){
         pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
         client.query("SELECT * FROM usuarios WHERE usuario=$1 AND password=$2", [req.params.usuario, req.params.password],
@@ -92,18 +75,6 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
                 res.json({"Error" : true, "Message" : "Error ejecutando postgresSQL query"});
             else
                 res.json({"Error" : false, "Message" : "Success", "Oferta" : result.rows});
-            });
-        });
-    });
-
-    router.get("/eventos",function(req,res){
-    	pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
-    		client.query("SELECT * FROM eventos", function(err, result) {
-    		done();
-            if(err)
-                res.json({"Error" : true, "Message" : "Error ejecutando postgresSQL query"});
-            else
-                res.json({"Error" : false, "Message" : "Success", "Evento" : result.rows});
             });
         });
     });
