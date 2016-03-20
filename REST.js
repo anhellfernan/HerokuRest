@@ -1,4 +1,4 @@
-var express = require("express");
+﻿var express = require("express");
 var pg   = require("pg");
 var bodyParser  = require("body-parser");
 var md5 = require('MD5');
@@ -95,7 +95,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
 
     router.get("/eventos",function(req,res){
     	pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
-    		client.query("SELECT * FROM eventos", function(err, result) {
+    		client.query("SELECT * FROM eventos WHERE fechadesde>=now()::date", function(err, result) {
     		done();
             if(err)
                 res.json({"Error" : true, "Message" : "Error ejecutando postgresSQL query"});
