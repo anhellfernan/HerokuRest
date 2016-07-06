@@ -1,4 +1,4 @@
-﻿var express = require("express");
+var express = require("express");
 var pg   = require("pg");
 var bodyParser  = require("body-parser");
 var md5 = require('MD5');
@@ -102,6 +102,29 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
             else
                 res.json({"Error" : false, "Message" : "Success", "Evento" : result.rows});
             });
+        });
+    });
+
+    router.get("/deleven/:estado",function(req,res){
+        pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
+            if(estado.equals("*") ) {
+                client.query("DELETE FROM eventos", function(err, result) {
+                done();
+                if(err)
+                    res.json({"Error" : true, "Mensaje" : "Error ejecutando postgresSQL query"});
+                else
+                    res.json({"Error" : false, "Mensaje" : "Success", "Evento" : result.rows});
+                });
+            };
+            else {
+                client.query("DELETE FROM eventos WHERE estado=$1",[req.params.estado], function(err, result) {
+                done();
+                if(err)
+                    res.json({"Error" : true, "Mensaje" : "Error ejecutando postgresSQL query"});
+                else
+                    res.json({"Error" : false, "Mensaje" : "Success", "Evento" : result.rows});
+                });  
+            };         
         });
     });
 
