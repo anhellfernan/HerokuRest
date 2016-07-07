@@ -105,6 +105,18 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection,md5) {
         });
     });
 
+    router.get("/delalleven",function(req,res){
+        pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
+           client.query("DELETE FROM eventos", function(err, result) {
+           done();
+           if(err)
+               res.json({"Error" : true, "Mensaje" : "Error ejecutando postgresSQL query"});
+           else
+               res.json({"Error" : false, "Mensaje" : "Success", "Evento" : result.rows});
+           });  
+        });
+    });
+
     router.get("/deleven/:estado",function(req,res){
         pg.connect(process.env.DATABASE_URL || connection, function(err, client, done) {
            client.query("DELETE FROM eventos WHERE estado=$1",[req.params.estado], function(err, result) {
